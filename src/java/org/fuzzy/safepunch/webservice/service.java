@@ -70,9 +70,10 @@ public class service extends HttpServlet {
         String sampler=request.getParameter("sampler");
         String gain=request.getParameter("gain");
         String fullscale=request.getParameter("fullscale");
-        String idle=request.getParameter("idle");
+        String idleServer=request.getParameter("idleServer");
+        String idleDevice=request.getParameter("idleDevice");
         SessionSettings settings=new SessionSettings();
-        settings.pushSettings(sampler, gain, fullscale, idle);
+        settings.pushSettings(sampler, gain, fullscale, idleServer, idleDevice);
         this.logger.info("Started WebWorker");
         this.worker.stop();
         this.worker.setSettings(settings);
@@ -94,7 +95,7 @@ public class service extends HttpServlet {
         }
         this.logger.debug("Pop data %s", data);
         output.setValue(data.getMeasure());
-        output.setDate(data.getDate());
+        output.setTimestamp(data.getDate().getTime());
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

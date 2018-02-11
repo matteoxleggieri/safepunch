@@ -7,9 +7,10 @@ function SP_Controller() {
     this.service=new SP_Service();
     this.service.init();
     this.chart=null;
-    this.datum=null;
-    this.x=0;
-    this.chartData=[
+    this.chartDatum=null;
+    this.xAxisOffset=0;
+    this.xAxisSpan=10000;
+    this.chartSeries=[
         {
             values: [],
             key: 'Values',
@@ -24,13 +25,15 @@ SP_Controller.prototype.setup=function(){
         var sampler=jQuery('.sampler input').val();
         var gain=jQuery('.gain input').val();
         var fullscale=jQuery('.fullscale input').val();
-        var idle=jQuery('.idle input').val();
+        var idleServer=jQuery('.idle-server input').val();
+        var idleDevice=jQuery('.idle-device input').val();
         var data={
             command: 'start',
             sampler: sampler,
             gain: gain,
             fullscale: fullscale,
-            idle: idle
+            idleServer: idleServer,
+            idleDevice: idleDevice
         };
         self.service.doAjaxRequest(data, function(data){
             if(data && data.text && data.text==='OK'){
@@ -48,28 +51,29 @@ SP_Controller.prototype.setup=function(){
             }
         });
     });
-    self.setupChart(self.chartData);
+    self.setupChart();
 };
 
 SP_Controller.prototype.onPopData=function(data, args){
     var controller=args[0];
     var service=args[1];
-    if(data && data.value){
-        //var $content=jQuery('.content');
-        //$content.text(data.text);
-        if(controller.x>100){
-            controller.chartData[0].values.splice(0, 1);
+    if(data && data.value && data.timestamp){
+        var firstSeries=controller.chartSeries[0];
+        if(controller.xAxisOffset===0){
+            controller.xAxisOffset=data.timestamp;
+        } else if((data.timestamp-controller.xAxisOffset)>controller.xAxisSpan) {
+            firstSeries.values.splice(0, 1);
         }
-        controller.chartData[0].values.push({x: controller.x, y: data.value});
-        controller.datum.datum(controller.chartData).transition().duration(500).call(controller.chart);
+        var date=new Date(data.timestamp);
+        firstSeries.values.push({x: date, y: data.value});
+        controller.chartDatum.datum(controller.chartSeries).transition().duration(500).call(controller.chart);
         nv.utils.windowResize(controller.chart.update);
-        controller.x++;
     } else {
         service.onEmptyData();
     }    
 };
 
-SP_Controller.prototype.setupChart=function(data) {
+SP_Controller.prototype.setupChart=function() {
     var self=this;    
     nv.addGraph(function() {
         self.chart = nv.models.lineChart()
@@ -77,20 +81,21 @@ SP_Controller.prototype.setupChart=function(data) {
           ;
 
         self.chart.xAxis
-          .axisLabel('Time (ms)')
-          .tickFormat(d3.format(',r'))
-          ;
+          .axisLabel('Time (HH:MM:SS.MS)')
+          .tickFormat(function(d){
+              return d3.time.format('%H:%M:%S.%L')(new Date(d));
+          });
 
         self.chart.yAxis
           .axisLabel('Voltage (v)')
-          .tickFormat(d3.format('.02f'))
+          .tickFormat(d3.format('.05f'))
           ;
 
         
-        self.datum = d3.select('#chart svg')
-          .datum(data)
+        self.chartDatum = d3.select('#chart svg')
+          .datum(self.chartSeries)
           ;
-        self.datum.transition().duration(500)
+        self.chartDatum.transition().duration(500)
           .call(self.chart)
           ;
 

@@ -14,7 +14,7 @@ import java.util.Date;
 public class ServiceResponse {
     
     private double value;
-    private Date date;
+    private long timestamp;
     private String text;
     
     public ServiceResponse(){
@@ -29,20 +29,20 @@ public class ServiceResponse {
         this.value = value;
     }   
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public String getText() {
         return text;
     }
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
     
 }

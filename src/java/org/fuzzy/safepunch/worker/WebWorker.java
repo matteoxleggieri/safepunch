@@ -89,7 +89,7 @@ public class WebWorker implements Runnable{
         try {
             this.logger.info("Connecting to host %s with credentials [%s, %s]", hostname, username, password);
             Socket client=new Socket(this.hostname, this.port);
-            String parameters=this.settings.getParameters();
+            String parameters=this.settings.getDeviceParameters();
             OutputStream out=client.getOutputStream();
             out.write(parameters.getBytes(Charset.forName("UTF-8")));
             out.flush();
@@ -108,7 +108,7 @@ public class WebWorker implements Runnable{
                 data.setDate(DateFormatter.parseISODateTimeMilliseconds(date));
                 data.setMeasure(measure);
                 this.queue.add(data);
-                Thread.sleep(this.settings.getIdle());
+                Thread.sleep(this.settings.getIdleServer());
                 date=reader.readLine();
                 value=reader.readLine();
             }

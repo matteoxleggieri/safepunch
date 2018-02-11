@@ -15,13 +15,15 @@ public class SessionSettings {
 
     private int gain;
     private int fullscale;
-    private int idle;
+    private int idleServer;
+    private int idleDevice;
     private int sampler;
     
     public SessionSettings() {
         this.gain=2;
         this.fullscale=32767;
-        this.idle=100;
+        this.idleServer=100;
+        this.idleDevice=100;
         this.sampler=2;
     }
 
@@ -41,12 +43,20 @@ public class SessionSettings {
         this.fullscale = fullscale;
     }
 
-    public int getIdle() {
-        return idle;
+    public int getIdleServer() {
+        return idleServer;
     }
 
-    public void setIdle(int idle) {
-        this.idle = idle;
+    public void setIdleServer(int idleServer) {
+        this.idleServer = idleServer;
+    }
+
+    public int getIdleDevice() {
+        return idleDevice;
+    }
+
+    public void setIdleDevice(int idleDevice) {
+        this.idleDevice = idleDevice;
     }
 
     public int getSampler() {
@@ -57,7 +67,7 @@ public class SessionSettings {
         this.sampler = sampler;
     }   
     
-    public void pushSettings(String sampler, String gain, String fullscale, String idle){
+    public void pushSettings(String sampler, String gain, String fullscale, String idleServer, String idleDevice){
         Double value=MathUtility.parseDouble(sampler);
         if(value!=null){
             this.sampler=value.intValue();
@@ -70,18 +80,22 @@ public class SessionSettings {
         if(value!=null){
             this.fullscale=value.intValue();
         }
-        value=MathUtility.parseDouble(idle);
+        value=MathUtility.parseDouble(idleServer);
         if(value!=null){
-            this.idle=value.intValue();
+            this.idleServer=value.intValue();
+        }
+        value=MathUtility.parseDouble(idleDevice);
+        if(value!=null){
+            this.idleDevice=value.intValue();
         }
     }
     
-    public String getParameters(){
+    public String getDeviceParameters(){
         StringBuilder buffer=new StringBuilder();
         buffer.append(this.sampler).append(",")
                 .append(this.gain).append(",")
                 .append(this.fullscale).append(",")
-                .append(this.idle);
+                .append(this.idleDevice);
         return buffer.toString();
     }
     

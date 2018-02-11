@@ -10,6 +10,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link href="assets/css/ext/nv.d3.min.css" media="all" rel="stylesheet">
+        <link href="assets/css/sp/safepunch.css" media="all" rel="stylesheet">
         <style>
             #chart svg {
               height: 400px;
@@ -47,15 +48,16 @@
             <label>Fullscale</label>
             <input type="number" name="fullscale" value="32767">
         </div>
-        <div class="idle">
-            <label>Idle (ms)</label>
-            <input type="number" name="idle" value="100">
+        <div class="idle-server">
+            <label>Idle Server (ms)</label>
+            <input type="number" name="idle_server" value="100">
+        </div>
+        <div class="idle-device">
+            <label>Idle Device (ms)</label>
+            <input type="number" name="idle_device" value="100">
         </div>
         <button class="start-command">Start Measure</button>
         <button class="stop-command">Stop Measure</button>
-        <div class="content">
-            
-        </div>
         <div id="chart">
             <svg></svg>
         </div>
